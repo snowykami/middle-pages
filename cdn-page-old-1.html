@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liteyuki CDN</title>
+    <style>
+        .container {
+            text-align: center;
+        }
+
+        .info-table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 5px 10px;
+        }
+
+        .label {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .value {
+            text-align: left;
+        }
+
+        a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        iframe {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-btn {
+            cursor: pointer;
+            color: #38bdf8;
+            text-decoration: underline;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Liteyuki CDN</h2>
+        <p>若你能看见的话，你正在访问轻雪的内容分发网络(CDN)</p>
+        <p>这是一个静态资源站，也是业务域名CNAME源</p>
+        <p>它可以把轻雪源服务器上的内容分发到边缘服务器上，从而降低网站资产访问延迟</p>
+        <p>解析到大陆节点的域名已经在当地政府备案，否则将不会看到这个页面</p>
+        <p>下面是一些连接信息</p>
+        <table class="info-table">
+            <tr>
+                <td class="label">节点IP:</td>
+                <td class="value" id="node-ip">{{NODE_IP}}</td>
+            </tr>
+            <tr>
+                <td class="label">节点名字:</td>
+                <td class="value" id="node-name">{{node-info}}</td>
+            </tr>
+            <tr>
+                <td class="label">节点ISP:</td>
+                <td class="value">
+                    <span class="value" id="node-ip-loc" style="display: none">暂无</span>
+                    <span class="value" id="node-isp">暂无</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">你的IP:</td>
+                <td class="value">
+                    <span id="user-ip">{{REAL_IP}}</span>
+                    <span class="toggle-btn" id="toggle-btn" onclick="toggleAllVisibility()">隐藏</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">用户ISP:</td>
+                <td class="value">
+                    <span class="value" id="user-network">{{user-location}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">协议类型:</td>
+                <td class="value" id="proto">暂无</td>
+            </tr>
+            <tr>
+                <td class="label">协议版本:</td>
+                <td class="value" id="protov">{{proto}}</td>
+            </tr>
+            <tr>
+                <td class="label">单向时延:</td>
+                <td class="value" id="ping-value">正在计算</td>
+            </tr>
+        </table>
+        <br>
+        <a href="https://uptime.liteyuki.org/status/cdn">查看节点们的状态</a>
+        <br><br>
+        <a href="https://liteyuki.org">轻雪主页  </a>
+        <br>
+        <p>听会歌吧 <span class="toggle-btn" onclick="changeMusic()">换一首</span></p>
+        <iframe id="music-bar" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86
+            src="//music.163.com/outchain/player?type=2&id=1&auto=1&height=66"></iframe>
+        <br>
+        <p>管理员动态</p>
+        <iframe src="https://lab.liteyuki.org/embed/user-timeline/a2utaz241qx60001?maxHeight=700"
+            data-misskey-embed-id="v1_cda2185d-fb41-42c0-a0a8-6a45d570b559" loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            style="border: none; width: 100%; max-width: 500px; height: 300px; color-scheme: light dark;"></iframe>
+        <script defer src="https://lab.liteyuki.org/embed.js"></script>
+        <br>
+
+        <footer>
+            <p>感谢<a href="https://www.007idc.cn/">007IDC</a>、<a href="https://liteyuki.org/">轻雪互联</a>及<a href="https://www.cloudflare.com/">科赋锐(Cloudflare)</a>提供的服务支援</p>
+        </footer>
+    </div>
+
+</body>
+
+<script>
+    function toggleIpVisibility(id) {
+        var element = document.getElementById(id);
+        var toggleBtn = document.getElementById('toggle-btn');
+        if (element.dataset.original) {
+            element.innerText = element.dataset.original;
+            element.removeAttribute('data-original');
+            toggleBtn.innerText = "隐藏";
+        } else {
+            element.dataset.original = element.innerText;
+            element.innerText = element.innerText.replace(/[^:.\(\)]/g, '*');
+            toggleBtn.innerText = "显示";
+        }
+    }
+
+    function toggleAllVisibility() {
+        var ids = ['user-ip'];
+        ids.forEach(toggleIpVisibility);
+    }
+    async function fetchDataAndProcess() {
+        try {
+            const userIpElement = document.getElementById('user-ip');
+            const userIpValue = userIpElement.innerText.split(',')[0];
+            let userIp = userIpValue;
+            if (userIp.includes(':')) {
+                userIp += ' (IPv6)';
+            } else {
+                userIp += ' (IPv4)';
+            }
+            userIpElement.innerText = userIp;
+            // const userIpResponse = await fetch(`https://api.mir6.com/api/ip?ip=${userIpValue}&type=json`);
+            // if (!userIpResponse.ok) {
+            //     throw new Error('获取用户IP信息失败');
+            //}
+            // const userData = await userIpResponse.json();
+            // document.getElementById('user-ip-loc').innerText = userData.data.location;
+            // document.getElementById('user-isp').innerText = userData.data.isp + ` ${userData.data.net}`;
+
+            const nodeIpResponse = await fetch(`https://api.mir6.com/api/ip?ip={{NODE_IP}}&type=json`);
+            if (!nodeIpResponse.ok) {
+                throw new Error('获取节点IP信息失败');
+            }
+            const nodeData = await nodeIpResponse.json();
+            document.getElementById('node-ip-loc').innerText = nodeData.data.location;
+            document.getElementById('node-isp').innerText = nodeData.data.isp + ` ${nodeData.data.net || "轻雪互联"}`;
+
+            const latency = await calculateLatency(window.location.href);
+            document.getElementById('ping-value').innerText = (latency / 2).toFixed(2) + 'ms';
+            changeMusic();
+
+        } catch (error) {
+            console.error('请求失败:', error);
+            alert('请求失败，请检查网络连接或网页链接的合法性。');
+        }
+    }
+    async function calculateLatency(url) {
+        const start = performance.now();
+        try {
+            await fetch(url, { method: 'HEAD' });
+        } catch (error) {
+            console.error('延迟计算失败:', error);
+            return null;
+        }
+        const end = performance.now();
+        return end - start;
+    }
+
+    function changeMusic() {
+        const musicIds = [29163452, 2118709322, 2621421177, 1485858993, 29107449, 1323760916, 580817, 
+        1360122230, 456185194, 1819778023, 1501478611, 1979731765, 29713216
+        ,1451998397];
+        const randomId = musicIds[Math.floor(Math.random() * musicIds.length)];
+        document.getElementById('music-bar').src = `//music.163.com/outchain/player?type=2&id=${randomId}&auto=1&height=66`;
+    }
+
+    async function setup() {
+        document.getElementById('proto').innerText = window.location.protocol.replace(':', '');
+        if (document.getElementById('proto').innerText === 'https') {
+            document.getElementById('proto').innerText += ' (安全)';
+        }
+        await fetchDataAndProcess();
+    };
+
+    setup()
+
+
+</script>
+<script src="https://fastly.jsdelivr.net/npm/live2d-widgets@0/autoload.js"></script>
+</html>

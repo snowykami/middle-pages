@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="https://cdn.liteyuki.org/icons/error.svg" />
+    <link
+      href="https://fonts.font.im/css?family=Source+Code+Pro"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${host} | ${status} ${statusMessage}</title>
+    <style>
+      
+      :root {
+        --main-bg-color: rgb(240, 240, 240);
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #fff;
+      } 
+
+      #info.section {
+        margin: 3rem 0;
+        text-align: center;
+      }
+
+      .section {
+        margin: 2rem 0;
+        text-align: center;
+      }
+
+      a {
+        color: #00bcfd;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      #status {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 0;
+      }
+
+      #status-message {
+        font-size: 5rem;
+        font-weight: bold;
+      }
+
+      #status-code {
+        margin-left: 3rem;
+        padding: 7px 15px;
+        font-size: 1rem;
+        border-radius: 100px;
+        background-color: var(--main-bg-color);
+      }
+
+      #map {
+        display: flex;
+        padding: 3rem;
+        background-color: var(--main-bg-color);
+        justify-content: space-around;
+        height: auto;
+      }
+
+      /* Node 组件样式 */
+      .node {
+        flex: 1;
+        margin: 0 15px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .node:first-child {
+        margin-left: 0;
+      }
+
+      .node:last-child {
+        margin-right: 0;
+      }
+
+      .node-img {
+        height: 100px;
+        width: auto;
+      }
+
+      .who {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .where {
+        font-size: 1rem;
+        margin-top: 5px;
+        color: #333;
+      }
+
+      .how {
+        font-size: 1rem;
+        margin-top: 5px;
+        font-weight: bold;
+      }
+
+      .how.working {
+        color: #07df72;
+      }
+
+      .how.error {
+        color: #ff6367;
+      }
+
+      #suggestions {
+        display: flex;
+        padding: 2rem;
+        justify-content: space-around;
+        height: auto;
+      }
+
+      .suggest {
+        flex: 1;
+        margin: 0 50px;
+        box-sizing: border-box;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      foot {
+        display: block;
+        text-align: center;
+        margin-top: 2rem;
+        padding: 1rem;
+        border-top: 1px solid #eee;
+        color: #666;
+      }
+
+      .ip-toggle {
+        cursor: pointer;
+        color: #00bcfd;
+        text-decoration: underline;
+      }
+
+      #request-id {
+        font-family: "Source Code Pro", monospace, sans-serif;
+      }
+
+      footer {
+        bottom: 0;
+        width: 100%;
+        padding: 1rem 0;
+        text-align: center;
+      }
+
+      /* 移动端适配 */
+      @media (max-width: 768px) {
+        .line {
+          margin-bottom: 1rem;
+        }
+
+        #request-info {
+          display: block;
+        }
+
+        #status {
+          display: block;
+          align-content: center;
+          justify-self: unset;
+        }
+
+        #status-message {
+          font-size: 2rem;
+        }
+
+        #status-code {
+          margin: 1rem 0;
+          background-color: unset;
+        }
+
+        #map {
+          display: block;
+        }
+
+        .node {
+          margin: 1rem 0;
+        }
+
+        #suggestions {
+          display: block;
+        }
+
+        .suggest {
+          margin: 1rem 0;
+        }
+      }
+    </style>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --main-bg-color: rgb(40, 40, 40);
+        }
+    
+        body {
+          background-color: #000;
+          color: #fff; /* 设置字体颜色为白色 */
+        }
+    
+        a {
+          color: #00bcfd;
+        }
+    
+        #status-code {
+          background-color: var(--main-bg-color);
+        }
+    
+        .where {
+          color: #ccc;
+        }
+    
+        .how.working {
+          color: #07df72;
+        }
+    
+        .how.error {
+          color: #ff6367;
+        }
+    
+        h2 {
+          color: #ccc;
+        }
+    
+        foot {
+          color: #999;
+        }
+    
+        .ip-toggle {
+          color: #00bcfd;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="info" class="section">
+      <div id="status">
+        <div id="status-message">升级中... 请坐和放宽</div>
+        <div id="status-code">Error code ${status}</div>
+      </div>
+    </div>
+    <div id="map" class="section">
+      <!-- Node组件：客户端 -->
+      <div class="node" id="client-node">
+        <img
+          class="node-img"
+          src="https://cdn.liteyuki.org/icons/client.svg"
+          alt="client"
+        />
+        <div class="who">You</div>
+        <div class="where" id="client-location">
+          ${geo.country.name} ${geo.province.name} ${geo.city.name}
+          ${geo.town.name} ${isp.name}
+        </div>
+        <div class="how working">Working</div>
+      </div>
+
+      <!-- Node组件：CDN -->
+      <div class="node" id="cdn-node">
+        <img
+          class="node-img"
+          src="https://cdn.liteyuki.org/icons/cloud.svg"
+          alt="cloud"
+        />
+        <div class="who">Liteyukiflare</div>
+        <div class="where">${node.name} [${node.id}]</div>
+        <div class="how working">Working</div>
+      </div>
+
+      <!-- Node组件：服务器 -->
+      <div class="node" id="server-node">
+        <img
+          class="node-img"
+          src="https://cdn.liteyuki.org/icons/server.svg"
+          alt="server"
+        />
+        <div class="who">Original</div>
+        <div class="where">${host}</div>
+        <div class="how error">Error</div>
+      </div>
+    </div>
+
+    <div id="suggestions" class="section">
+      <div id="what" class="suggest">
+        <h2>发生了什么</h2>
+        <p>
+          看起来像是出现了一些错误，可能是由于你的请求有误，也可能是由于服务器出现了一些故障，总之就是出现了错误
+        </p>
+        <p>
+          访问<a href="https://http.cat/status/${status}" target="_blank">http.cat</a>以获取更多有趣的状态码知识
+        </p>
+      </div>
+      <div id="why" class="suggest">
+        <h2>为什么会这样</h2>
+        <p>
+          发生原因非常复杂，猫猫关掉了电源，老鼠咬断了光纤，鲸鱼集装箱翻了，大轮船沉没了，或者被环保主义者关掉了电源，服务器超载等都会造成这种情况
+        </p>
+      </div>
+      <div id="how" class="suggest">
+        <h2>我应该怎么做</h2>
+        <p>
+          如果你是用户，请检查你的请求是否正确，访问的资源是否存在以及是否有权限访问，如果是服务器的问题，请晚些时候再试或者联系管理员
+        </p>
+        <p>如果你是站点管理员，请检查服务器和进程的运行状况</p>
+      </div>
+    </div>
+
+    <footer>
+      <div>
+        本页面由 <a href="https://007idc.cn" target="_blank">007IDC</a> 提供支持 |
+        <a href="https://liteyuki.icu" target="_blank">轻雪主站</a>
+      </div>
+      <div>
+        请求ID: <span id="request-id">${requestId}</span> | 时间:
+        <span id="request-timestamp">${time
