@@ -25,7 +25,7 @@
     }
 
     h1 {
-      font-size: 4rem !important;
+      font-size: 3rem !important;
       margin: 0;
       color: var(--primary-color);
     }
@@ -203,17 +203,23 @@
     .flow-container {
       display: flex;
       align-items: flex-start;
-      justify-content: space-between;
+      justify-content: space-around;
       flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 30px;
+      /* 默认居中，防止超宽时溢出 */
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 100vw;
+      box-sizing: border-box;
     }
 
     .flow-arrow {
       flex: 0 0 auto;
       margin: 40px 0px 0 0px;
       height: 2px;
-      width: clamp(60px, 15%, 600px);
+      width: clamp(40px, 12vw, 600px);
       border-top: 2px dashed;
       background: none;
     }
@@ -237,9 +243,19 @@
     }
 
     @media (max-width: 768px) {
+      .card {
+        padding: px;
+      }
+
       .flow-container {
         gap: 5px !important;
         flex-wrap: nowrap !important;
+        justify-content: space-around !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        max-width: 100vw !important;
+        overflow-x: auto !important;
+        box-sizing: border-box !important;
       }
 
       .node-circle {
@@ -270,6 +286,9 @@
 
       .flow-arrow {
         margin: 22px 0px 0 0px !important;
+        width: 8vw !important;
+        min-width: 10px !important;
+        max-width: 30px !important;
       }
 
       .section-title {
@@ -298,7 +317,7 @@
 <body
   style="font-family: 'Source Code Pro', monospace; margin: 0; padding: 20px; background-color: var(--bg-primary); color: var(--text-primary);">
   <div class="page-header">
-    <h2 class="page-subtitle">${host}</h2>
+    <!-- <h2 class="page-subtitle">${host}</h2> -->
     <h1 class="page-title">${status}</h1>
     <h2 class="page-subtitle">${statusMessage}</h2>
   </div>
