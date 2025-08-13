@@ -320,12 +320,12 @@
   <div class="page-header">
     <!-- <h2 class="page-subtitle">${host}</h2> -->
     <h1 class="page-title">${status}</h1>
-    <h2 class="page-subtitle">${statusMessage}</h2>
+    <h2 id="statusMessage" class="page-subtitle">${statusMessage}</h2>
   </div>
 
   <div class="card">
     <div class="center-title">
-      <h2 class="section-title">Request Flow (请求流)</h2>
+      <h2 class="section-title">Request Flow</h2>
       <h2 class="section-title"></h2>
     </div>
     <div class="flow-container">
@@ -375,25 +375,29 @@
 
   <div class="card">
     <div class="center-title">
-      <h2 class="section-title">Details (详情)</h2>
+      <h2 class="section-title">Details</h2>
     </div>
     <div class="tech-grid">
-      <div class="tech-label">Error Code (错误代码):</div>
-      <div class="tech-value">${status}</div>
-      <div class="tech-label">RayID (请求ID):</div>
-      <div class="tech-value">${requestId}</div>
-      <div class="tech-label">Time (时间):</div>
-      <div class="tech-value">${timeISO8601}</div>
-      <div class="tech-label">Your IP (你的IP):</div>
-      <div class="tech-value"
-        onclick="this.innerHTML=this.innerHTML.includes('Click')?'${remoteAddr}':'Click to reveal / 点击显示'"
-        style="cursor: pointer;">Click to reveal / 点击显示</div>
-      <div class="tech-label">Your ISP (你的ISP):</div>
-      <div class="tech-value">${geo.country.name} ${geo.province.name} ${geo.city.name} ${geo.town.name} ${isp.name}
+      <div class="tech-label">Status:</div>
+      <div class="tech-value">
+        <a href="https://http.cat/status/${status}">${status}</a>
       </div>
-      <div class="tech-label">CDN Node (节点):</div>
+      <div class="tech-label">RayID:</div>
+      <div class="tech-value">${requestId}</div>
+      <div class="tech-label">Time:</div>
+      <div class="tech-value">${timeISO8601}</div>
+      <div class="tech-label">Your IP:</div>
+      <div class="tech-value"
+        onclick="this.innerHTML=this.innerHTML.includes('Click')?'${remoteAddr}':'Click to reveal'"
+        style="cursor: pointer;">Click to reveal</div>
+      <div class="tech-label">Your ISP:</div>
+      <div class="tech-value"
+        onclick="this.innerHTML=this.innerHTML.includes('Click')?'${geo.country.name} ${geo.province.name} ${geo.city.name} ${geo.town.name} ${isp.name}':'Click to reveal'"
+        style="cursor: pointer;"
+        >Click to reveal</div>
+      <div class="tech-label">CDN Node:</div>
       <div class="tech-value">${node.name}</div>
-      <div class="tech-label">Host (主机名):</div>
+      <div class="tech-label">Host:</div>
       <div class="tech-value">${host}</div>
     </div>
   </div>
@@ -404,27 +408,53 @@
         <path
           d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
       </svg>
-      Try 再试
+      Retry
     </button>
     <button class="btn btn-secondary" onclick="location.href='https://liteyuki.org/'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
       </svg>
-      Home 轻雪主站
+      Home
     </button>
   </div>
 
   <div class="help-text">
-    <p>If you are a visitor of this website, please try again in a few minutes .</p>
+    <p>If you are a visitor of this website, please try again in a few minutes.</p>
     <p>If you are the owner of this website, please contact your hosting provider or check your DNS settings or contact
       <a href="mailto:contact@liteyuki.org">contact@liteyuki.org</a> for assistance.
     </p>
-    <div class="divider">
-    </div>
+    <div class="divider"></div>
     <p>如果你是此站访客，请晚些时候尝试</p>
     <p>如果你是此站所有者，请联系你的主机提供商或检查你的 DNS 设置，或联络
       <a href="mailto:contact@liteyuki.org">contact@liteyuki.org</a>获取援助
     </p>
+    <script>
+      // 非标准状态码映射
+      const customStatusMessages = {
+        521: "Web Server Is Down (Cloudflare)",
+        522: "Connection Timed Out (Cloudflare)",
+        523: "Origin Is Unreachable (Cloudflare)",
+        525: "SSL Handshake Failed (Cloudflare)",
+        530: "Site Frozen (Cloudflare)",
+        599: "Network Connect Timeout Error",
+        600: "Synodriver Warning",
+        601: "Snowykami Warning",
+        602: "Redish101 Warning",
+        603: "Ariasaka Warning",
+        604: "HornCopper Warning",
+        605: "Rainzee Warning",
+        606: "Liteyuki Warning",
+        607: "ChenXu233 Warning"
+      };
+      // 获取页面上的状态码
+      const status = Number(document.querySelector('.page-title')?.textContent?.trim());
+      if (customStatusMessages[status]) {
+        const statusMsgElem = document.getElementById('statusMessage');
+        if (statusMsgElem) {
+          statusMsgElem.textContent = customStatusMessages[status] || "Unknown Status";
+        }
+      }
+    </script>
   </div>
 </body>
 
