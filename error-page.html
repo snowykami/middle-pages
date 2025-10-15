@@ -393,8 +393,7 @@
       <div class="tech-label">Your ISP:</div>
       <div class="tech-value"
         onclick="this.innerHTML=this.innerHTML.includes('Click')?'${geo.country.name} ${geo.province.name} ${geo.city.name} ${geo.town.name} ${isp.name}':'Click to reveal'"
-        style="cursor: pointer;"
-        >Click to reveal</div>
+        style="cursor: pointer;">Click to reveal</div>
       <div class="tech-label">CDN Node:</div>
       <div class="tech-value">${node.name}</div>
       <div class="tech-label">Host:</div>
@@ -431,11 +430,18 @@
     <script>
       // 非标准状态码映射
       const customStatusMessages = {
+        520: "I Love You (Cloudflare)",
         521: "Web Server Is Down (Cloudflare)",
         522: "Connection Timed Out (Cloudflare)",
         523: "Origin Is Unreachable (Cloudflare)",
         525: "SSL Handshake Failed (Cloudflare)",
         530: "Site Frozen (Cloudflare)",
+        531: "DNS Resolution Error (Cloudflare)",
+        540: "Web Server Is Down (Liteyuki Origin)",
+        541: "Connection Timed Out (Liteyuki Origin)",
+        542: "Origin Is Unreachable (Liteyuki Origin)",
+        543: "SSL Handshake Failed (Liteyuki Origin)",
+        544: "Site Frozen (Liteyuki Origin)",
         599: "Network Connect Timeout Error",
         600: "Synodriver Warning",
         601: "Snowykami Warning",
