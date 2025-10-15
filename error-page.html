@@ -460,6 +460,18 @@
           statusMsgElem.textContent = customStatusMessages[status] || "Unknown Status";
         }
       }
+      
+      // 520彩蛋：粉红色背景主题
+      if (status === 520) {
+        document.documentElement.style.setProperty('--bg-primary', '#ffe4f0');
+        document.documentElement.style.setProperty('--bg-card', '#fff0f7');
+        document.documentElement.style.setProperty('--primary-color', '#ff69b4');
+        document.documentElement.style.setProperty('--border-color', '#ffb6d9');
+        document.documentElement.style.setProperty('--text-primary', '#4d1f2e');
+        document.documentElement.style.setProperty('--text-secondary', '#8b4566');
+        document.documentElement.style.setProperty('--success-color', '#ff85c0');
+        document.documentElement.style.setProperty('--error-color', '#ff69b4');
+      }
     </script>
   </div>
 </body>
